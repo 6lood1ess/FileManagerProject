@@ -1,0 +1,8 @@
+<Solution>
+  <Folder Name="/Элементы решения/">
+    <File Path="../../../Downloads/.editorconfig" />
+  </Folder>
+  <Project Path="../FileManagerLibrary/FileManagerLibrary.csproj" />
+  <Project Path="../FileManagerTests/FileManagerTests.csproj" />
+  <Project Path="FileManagerConsole.csproj" />
+</Solution>

@@ -1,7 +1,5 @@
-﻿using FileManagerLibrary.Models;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using FileManagerLibrary.Models;
 
 namespace FileManagerTests {
   [TestClass]
@@ -35,11 +33,11 @@ namespace FileManagerTests {
     [TestCategory("Singleton")]
     public void EncryptionKeyManager_MultipleCalls_ShouldReturnSameInstance(int callCount) {
       EncryptionKeyManager[] instances = new EncryptionKeyManager[callCount];
-      for (int callNumber = 0; callNumber < callCount; callNumber++) {
+      for (int callNumber = 0; callNumber < callCount; ++callNumber) {
         instances[callNumber] = EncryptionKeyManager.Instance;
       }
              
-      for (int callNumber = 1; callNumber < callCount; callNumber++) { 
+      for (int callNumber = 1; callNumber < callCount; ++callNumber) { 
         Assert.AreSame(instances[0], instances[callNumber]);
       }        
     }

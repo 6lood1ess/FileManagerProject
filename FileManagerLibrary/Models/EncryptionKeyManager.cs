@@ -2,7 +2,7 @@
 using System.Security.Cryptography;
 
 namespace FileManagerLibrary.Models {
-  public sealed class EncryptionKeyManager {
+  public class EncryptionKeyManager {
     private static readonly object _threadLockObject = new object();
     private static EncryptionKeyManager _uniqueInstance;
    

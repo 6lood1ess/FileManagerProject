@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using FileManagerLibrary.Services;
 using Moq;
-using FileManagerLibrary.Services;
 
 namespace FileManagerTests {
   [TestClass]
@@ -47,14 +43,19 @@ namespace FileManagerTests {
       Mock<FileMover> mockMover = new Mock<FileMover>();
       Mock<FileStatisticsCalculator> mockStats = new Mock<FileStatisticsCalculator>();
 
-      mockScanner.Setup(s => s.ScanDirectoryForAllFiles(It.IsAny<string>()))
-        .Returns(new List<FileInfo>());
+      List<FileInfo> mockFileList = new List<FileInfo> {
+        new FileInfo(Path.Combine(_testDirectory, "test1.txt")),
+        new FileInfo(Path.Combine(_testDirectory, "test2.jpg"))
+      };
+
+      mockScanner.Setup(scanner => scanner.ScanDirectoryForAllFiles(It.IsAny<string>()))
+        .Returns(mockFileList);
 
       FileOrganizerFacade facade = new FileOrganizerFacade(mockScanner.Object, mockMover.Object, mockStats.Object);
       facade.GroupFilesByFileType(_testDirectory);
 
-      mockScanner.Verify(s => s.ScanDirectoryForAllFiles(_testDirectory), Times.Once);
-      mockMover.Verify(m => m.MoveFilesToDestination(It.IsAny<List<FileInfo>>(), It.IsAny<string>()), Times.AtLeastOnce);
+      mockScanner.Verify(scanner => scanner.ScanDirectoryForAllFiles(_testDirectory), Times.Once);
+      mockMover.Verify(mover => mover.MoveFilesToDestination(It.IsAny<List<FileInfo>>(), It.IsAny<string>()), Times.AtLeastOnce);
     }
 
     [DataTestMethod]

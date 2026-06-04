@@ -52,23 +52,23 @@ namespace FileManagerTests {
                  "и восстанавливает несколько состояний (стек LIFO)")]
     public void BackupHistoryCaretaker_SaveAndRestore_ShouldWorkInLifoOrder() {
       Assert.IsNotNull(_testFilePath, "_testFilePath не должен быть null");
-      Assert.IsNotNull(_originalContent, "_originalContent не должен быть null");
-      Assert.IsNotNull(_modifiedContent, "_modifiedContent не должен быть null");
-      
-      FileOriginatorForBackup originator = new FileOriginatorForBackup(_testFilePath);
+
+      byte[] firstVersion = Encoding.UTF8.GetBytes("Version 1: Original content");
+      byte[] secondVersion = Encoding.UTF8.GetBytes("Version 2: Modified content");
+      byte[] thirdVersion = Encoding.UTF8.GetBytes("Version 3: Final content");
+
+      FileOriginatorForBackup originator;
       BackupHistoryCaretaker caretaker = new BackupHistoryCaretaker();
       
-      byte[] thirdVersionContent = Encoding.UTF8.GetBytes("Версия 3: третий бэкап финальная версия");
-      
-      File.WriteAllBytes(_testFilePath, _originalContent);
+      File.WriteAllBytes(_testFilePath, firstVersion);
       originator = new FileOriginatorForBackup(_testFilePath);
       caretaker.SaveCurrentStateToHistory(originator);
       
-      File.WriteAllBytes(_testFilePath, _modifiedContent);
+      File.WriteAllBytes(_testFilePath, secondVersion);
       originator = new FileOriginatorForBackup(_testFilePath);
       caretaker.SaveCurrentStateToHistory(originator);
-      
-      File.WriteAllBytes(_testFilePath, thirdVersionContent);
+
+      File.WriteAllBytes(_testFilePath, thirdVersion);
       originator = new FileOriginatorForBackup(_testFilePath);
       caretaker.SaveCurrentStateToHistory(originator);
       
@@ -77,12 +77,12 @@ namespace FileManagerTests {
             
       caretaker.RestoreLastStateFromHistory(originator);
       byte[] contentAfterFirstRestore = File.ReadAllBytes(_testFilePath);
-      CollectionAssert.AreEqual(_modifiedContent, contentAfterFirstRestore, 
+      CollectionAssert.AreEqual(secondVersion, contentAfterFirstRestore, 
                                 "После первого восстановления должен быть файл второй версии");
             
       caretaker.RestoreLastStateFromHistory(originator);
       byte[] contentAfterSecondRestore = File.ReadAllBytes(_testFilePath);
-      CollectionAssert.AreEqual(_originalContent, contentAfterSecondRestore, 
+      CollectionAssert.AreEqual(firstVersion, contentAfterSecondRestore, 
                                 "После второго восстановления должен быть файл первой версии");
             
       Assert.AreEqual(1, caretaker.GetBackupHistoryCount(), 
@@ -106,8 +106,8 @@ namespace FileManagerTests {
                       "Memento должен хранить правильное имя файла");
       Assert.IsNotNull(backupMemento.FileContentHash,
                        "Memento должен вычислять хеш содержимого");
-      Assert.IsGreaterThan(backupMemento.FileContentHash.Length, 0,
-                    "Хеш не должен быть пустым");
+      Assert.AreEqual(64, backupMemento.FileContentHash.Length,
+                      "Хеш SHA256 должен быть длиной 64 символа в шестнадцатеричном представлении");
       Assert.IsTrue(backupMemento.BackupCreationTime <= DateTime.Now,
                     "Время создания бэкапа должно быть в прошлом или настоящем");
     }

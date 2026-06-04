@@ -1,5 +1,4 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using FileManagerLibrary.Models;
+﻿using FileManagerLibrary.Models;
 
 namespace FileManagerTests {
   [TestClass]
@@ -29,7 +28,6 @@ namespace FileManagerTests {
     [DataRow(1)]
     [DataRow(5)]
     [DataRow(10)]
-
     [TestCategory("Singleton")]
     public void EncryptionKeyManager_MultipleCalls_ShouldReturnSameInstance(int callCount) {
       EncryptionKeyManager[] instances = new EncryptionKeyManager[callCount];

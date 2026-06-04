@@ -24,21 +24,15 @@ namespace FileManagerLibrary.Models {
     }
 
     private string ComputeSha256Hash(byte[] contentToHash) {
-      using (SHA256 sha256HashAlgorithm = SHA256.Create()) {
-        byte[] hashBytes = sha256HashAlgorithm.ComputeHash(contentToHash);
-
-        int maximumHashLengthForDisplay = 8;
-        int currentBytePosition = 0;
-        int upperBoundary = Math.Min(maximumHashLengthForDisplay, hashBytes.Length);
-
-        StringBuilder stringBuilder = new StringBuilder();
-
-        for (currentBytePosition = 0; currentBytePosition < upperBoundary; ++currentBytePosition) {
-          stringBuilder.Append(hashBytes[currentBytePosition].ToString("X2"));
-        }
-
-        return stringBuilder.ToString();
+      if (contentToHash == null || contentToHash.Length == 0) {
+        return "EMPTY_HASH";
       }
+
+      using (SHA256 sha256HashAlgorithm = SHA256.Create()) {
+        byte[] computedHashBytes = sha256HashAlgorithm.ComputeHash(contentToHash);
+
+                return Convert.ToHexString(computedHashBytes);
+            }
     }
   }
 }

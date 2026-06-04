@@ -29,7 +29,7 @@ namespace FileManagerLibrary.Services {
         sortedFiles = allFiles.OrderByDescending(file => file.LastWriteTime).ToList();
       }
 
-      Console.WriteLine($"\n📁 Сортировка файлов в папке: {targetDirectoryPath}");
+      Console.WriteLine($"\n Сортировка файлов в папке: {targetDirectoryPath}");
       Console.WriteLine(new string('─', _separatorLineLength));
 
       int filesToDisplay = Math.Min(_displayLimit, sortedFiles.Count);
@@ -43,13 +43,12 @@ namespace FileManagerLibrary.Services {
       List<FileInfo> filesToMove = _fileScannerSubsystem.ScanDirectoryByFileExtension(sourceDirectoryPath, targetFileExtension);
 
       if (filesToMove.Count == 0) {
-        Console.WriteLine($"⚠️ Файлы с расширением {targetFileExtension} не найдены");
+        Console.WriteLine($" Файлы с расширением {targetFileExtension} не найдены");
         return 0;
       }
 
-      Console.WriteLine($"📦 Найдено {filesToMove.Count} файлов с расширением {targetFileExtension}");
+      Console.WriteLine($"Найдено {filesToMove.Count} файлов с расширением {targetFileExtension}\nПеремещено {filesToMove.Count} файлов в {destinationDirectoryPath}");
       _fileMoverSubsystem.MoveFilesToDestination(filesToMove, destinationDirectoryPath);
-      Console.WriteLine($"✅ Перемещено {filesToMove.Count} файлов в {destinationDirectoryPath}");
 
       return filesToMove.Count;
     }
@@ -61,10 +60,10 @@ namespace FileManagerLibrary.Services {
     public Dictionary<string, int> GroupFilesByFileType(string sourceDirectoryPath) {
       List<FileInfo> allFiles = _fileScannerSubsystem.ScanDirectoryForAllFiles(sourceDirectoryPath);
 
-      var filesGroupedByExtension = allFiles.GroupBy(file => file.Extension.ToLower());
-      var groupingResult = new Dictionary<string, int>();
+      IEnumerable<IGrouping<string, FileInfo>> filesGroupedByExtension = allFiles.GroupBy(file => file.Extension.ToLower());
+      Dictionary<string, int> groupingResult = new Dictionary<string, int>();
 
-      foreach (var extensionGroup in filesGroupedByExtension) {
+      foreach (IGrouping<string, FileInfo> extensionGroup in filesGroupedByExtension) {
         string groupFolderName = extensionGroup.Key.TrimStart('.');
         if (string.IsNullOrEmpty(groupFolderName)) {
           groupFolderName = "files_without_extension";
@@ -77,7 +76,7 @@ namespace FileManagerLibrary.Services {
         groupingResult.Add(extensionGroup.Key, filesInThisGroup.Count);
       }
 
-      Console.WriteLine($"✅ Файлы в {sourceDirectoryPath} сгруппированы по типам");
+      Console.WriteLine($" Файлы в {sourceDirectoryPath} сгруппированы по типам");
       return groupingResult;
     }
   }

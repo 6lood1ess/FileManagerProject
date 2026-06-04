@@ -3,14 +3,12 @@ using System.Security.Cryptography;
 
 namespace FileManagerLibrary.Models {
   public sealed class EncryptionKeyManager {
-    private static EncryptionKeyManager _uniqueInstance;
     private static readonly object _threadLockObject = new object();
-
+    private static EncryptionKeyManager _uniqueInstance;
+   
     private byte[] _encryptionKey;
     private byte[] _initializationVector;
     private bool _isKeyInitialized = false;
-
-    private EncryptionKeyManager() { }
 
     public static EncryptionKeyManager Instance {
       get {
@@ -23,6 +21,14 @@ namespace FileManagerLibrary.Models {
         }
 
         return _uniqueInstance;
+      }
+    }
+
+    private EncryptionKeyManager() { }
+
+    public bool IsEncryptionKeyInitialize {
+      get {
+        return _isKeyInitialized;
       }
     }
 
@@ -46,8 +52,6 @@ namespace FileManagerLibrary.Models {
 
       return (_encryptionKey, _initializationVector);
     }
-
-    public bool IsEncryptionKeyInitialized => _isKeyInitialized;
 
     public void DisplaySingletonInformation() {
       Console.WriteLine($"Singleton: EncryptionKeyManager готов, ключ = {_encryptionKey?.Length ?? 0} байт");
